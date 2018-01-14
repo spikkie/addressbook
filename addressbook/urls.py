@@ -21,11 +21,13 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 
+import hello.views
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^posts/', include(("posts.urls","posts"), namespace='posts')),
-    url(r'^$', include(("posts.urls","posts"), namespace='posts')),
+    url(r'^$', "hello.views", name='home'),
     #url(r'^posts/$', "<appname>.views.<function_name>"),
 ]
 

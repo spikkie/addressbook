@@ -25,6 +25,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^posts/', include(("posts.urls","posts"), namespace='posts')),
+    url(r'^$', include(("posts.urls","posts"), namespace='posts')),
     #url(r'^posts/$', "<appname>.views.<function_name>"),
 ]
 

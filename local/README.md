@@ -1,0 +1,1 @@
+/home/spikkie/projects/django/django_1_9_blog/README.md

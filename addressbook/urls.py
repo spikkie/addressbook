@@ -27,7 +27,7 @@ import hello.views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^posts/', include(("posts.urls","posts"), namespace='posts')),
-    url(r'^$', "hello.views", name='home'),
+    url(r'^$', hello.views.index, name='index'),
     #url(r'^posts/$', "<appname>.views.<function_name>"),
 ]
 

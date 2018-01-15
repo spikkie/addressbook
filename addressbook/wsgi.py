@@ -1,6 +1,5 @@
 """
 WSGI config for addressbook project.
-ddressbook/g
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

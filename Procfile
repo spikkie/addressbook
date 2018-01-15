@@ -1,1 +1,1 @@
-web: gunicorn gettingstarted.wsgi
+Web: gunicorn addressbook.wsgi

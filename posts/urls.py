@@ -10,6 +10,7 @@ from .views import (
 	PostDetailView
 	)
 
+app_name = 'posts'
 urlpatterns = [
     url(r'^$', post_list, name='list'),
     url(r'^create/$', post_create),

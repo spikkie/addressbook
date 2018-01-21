@@ -11,6 +11,7 @@ gunicorn = "*"
 django-heroku = "*"
 requests = "*"
 pillow = "*"
+dj-database-url = "*"
 
 
 [requires]

@@ -24,13 +24,16 @@ admin.autodiscover()
 
 import hello.views
 
+from accounts.views import LoginView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^posts/', include("posts.urls",namespace='posts')),
     #url(r'^posts/', include(("posts.urls","posts"), namespace='posts')),
-    url(r'^$', hello.views.index, name='index'),
+    #url(r'^$', hello.views.index, name='index'),
     #url(r'^posts/$', "<appname>.views.<function_name>"),
+    url(r'^$', LoginView.as_view(), name='login'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
 ]
 
 #TODO

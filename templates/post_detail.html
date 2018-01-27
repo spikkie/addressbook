@@ -2,20 +2,31 @@
 {% load urlify %}
 
 {% block head_title %}
-{{ object.title }} | {{ block.super }}
+{{ object.first_name }} | {{ block.super }}
 {% endblock head_title %}
 
 
 
 {% block content %}
+
 <div class='col-sm-6 col-sm-offset-3'>
-    {% if object.image %}
-    <img src='{{ object.image.url }}' class='img-responsive' />
+    {% if object.photo %}
+    <img src='{{ object.photo.url }}' class='img-responsive' />
     {% endif %}
-<h1>{{ object.title }} <small>{% if object.draft %}<span style='color:red;'>Draft</span> {% endif %}{{ object.publish }}</small></h1>
+<h1>{{ object.first_name }} {{ object.last_name }} <small>{% if object.draft %}<span style='color:red;'>Draft</span> {% endif %}{{ object.publish }}</small></h1>
 {% if object.user.get_full_name %}
 <p>Author: {{ object.user.get_full_name }}</p>
 {% endif %}
+
+{{ object.first_name }}</br>
+{{ object.last_name }}</br>
+{{ object.street }}</br>
+{{ object.street_nr }}</br>
+{{ object.post_code }}</br>
+{{ object.city }}</br>
+{{ object.land }}</br>
+{{ object.phone_nr }}</br>
+
 
 <p><div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
 <hr/>
@@ -43,7 +54,7 @@ Linkedin
 <div class='row'>
 <div class='col-sm-12'>
 
-{{ object.content|linebreaks }}
+{{ object.first_name|linebreaks }}
 
 <hr/>
 <br/>

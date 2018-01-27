@@ -8,19 +8,28 @@
 <input type='text' name='q' placeholder='Search posts' value='{{ request.GET.q }}'/>
 <input type='submit' value='Search' />
 </form>
-{% for obj in object_list %}
+
+<a href="{% url 'posts:create' %}">Create</a>
+
+{% for object in object_list %}
 <div class="row">
   <div class="col-sm-12">
     <div class="thumbnail">
-        {% if obj.image %}
+        {% if object.photo %}
          <img src='{{ obj.image.url }}' class='img-responsive' />
         {% endif %}
       <div class="caption">
-        {% if obj.draft %}<h3>Staff only: Draft</h3>{% endif %} {% if obj.publish > today %}<h3>Staff Only: Future Post</h3>{% endif %}
-        <h3><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a> <small>{{ obj.publish }}</small></h3>
-        {% if obj.user.get_full_name %}<p>Author: {{ obj.user.get_full_name }}</p>{% endif %}
-        <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
-        <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+        {% if object.draft %}<h3>Staff only: Draft</h3>{% endif %} {% if object.publish > today %}<h3>Staff Only: Future Post</h3>{% endif %}
+        <h3><a href='{{ object.get_absolute_url }}'>{{ object.first_name }} {{ object.last_name }}</a> 
+            </h3>
+         <!--    <small>{{ object.publish }}</small> -->
+        <!-- {% if object.user.get_full_name %}<p>Author: {{ object.user.get_full_name }}</p>{% endif %}  -->
+        {{ object.first_name }} {{ object.last_name }}</br>
+        {{ object.street }} {{ object.street_nr }}</br>
+        {{ object.post_code }} {{ object.city }}</br>
+        {{ object.land }}</br>
+        {{ object.phone_nr }}</br>
+        <p><a href="{{ object.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
       </div>
     </div>
   </div>

@@ -14,20 +14,21 @@ from django.utils.text import slugify
 #Post.objects.all().published()
 #Post.objects.create(user=user, title="Some time")
 
-class PostQuerySet(models.query.QuerySet):
-    def not_draft(self):
-        return self.filter(draft=False)
+#class PostQuerySet(models.query.QuerySet):
+    #def not_draft(self):
+    #    return self.filter(draft=False)
     
-    def published(self):
-        return self.filter(publish__lte=timezone.now()).not_draft()
+    #def published(self):
+    #    return self.filter(publish__lte=timezone.now()).not_draft()
 
 class PostManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return PostQuerySet(self.model, using=self._db)
+    #def get_queryset(self, *args, **kwargs):
+    #    return PostQuerySet(self.model, using=self._db)
             
     def active(self, *args, **kwargs):
-        # Post.objects.all() = super(PostManager, self).all()
-        return self.get_queryset().published()
+        #Post.objects.all() = super(PostManager, self).all()
+        #return self.get_queryset()
+        return Post.objects.all()
 
 
 def upload_location(instance, filename):
@@ -46,28 +47,37 @@ def upload_location(instance, filename):
 
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
-    title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
-    image = models.ImageField(upload_to=upload_location, 
+    
+    first_name = models.CharField(max_length=255, blank=True, default='')
+    last_name  = models.CharField(max_length=255, blank=True, default='')
+    street     = models.CharField(max_length=255, blank=True, default='')
+    street_nr  = models.CharField(max_length=255, blank=True, default='')
+    post_code  = models.CharField(max_length=255, blank=True, default='')
+    city       = models.CharField(max_length=255, blank=True, default='')
+    land       = models.CharField(max_length=255, blank=True, default='')
+    phone_nr   = models.CharField(max_length=255, blank=True, default='')
+
+    #draft      = models.BooleanField(default=False)
+    #publish    = models.DateField(auto_now=False, auto_now_add=False)
+    updated    = models.DateTimeField(auto_now=True, auto_now_add=False)
+    timestamp  = models.DateTimeField(auto_now=False, auto_now_add=True)
+
+    photo = models.ImageField(upload_to=upload_location, 
             null=True, 
             blank=True, 
             width_field="width_field", 
             height_field="height_field")
     height_field = models.IntegerField(default=0)
     width_field = models.IntegerField(default=0)
-    content = models.TextField()
-    draft = models.BooleanField(default=False)
-    publish = models.DateField(auto_now=False, auto_now_add=False)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     objects = PostManager()
 
     def __unicode__(self):
-        return self.title
+        return self.first_name
 
     def __str__(self):
-        return self.title
+        return self.first_name
 
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"slug": self.slug})
@@ -82,7 +92,7 @@ class Post(models.Model):
 
 
 def create_slug(instance, new_slug=None):
-    slug = slugify(instance.title)
+    slug = slugify(instance.first_name + instance.last_name)
     if new_slug is not None:
         slug = new_slug
     qs = Post.objects.filter(slug=slug).order_by("-id")
@@ -106,13 +116,4 @@ def pre_save_post_receiver(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(pre_save_post_receiver, sender=Post)
-
-
-
-
-
-
-
-
-
 

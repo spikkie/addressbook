@@ -8,9 +8,12 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = [
-            "title",
-            "content",
-            "image",
-            "draft",
-            "publish",
+            "first_name",
+            "last_name",
+            "street",
+            "street_nr",
+            "post_code",
+            "city",
+            "land",
+            "phone_nr",
         ]

@@ -8,6 +8,7 @@ try:
 except: 
     pass
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
@@ -20,7 +21,8 @@ from .models import Post
 
 def post_create(request):
 	if not request.user.is_staff or not request.user.is_superuser:
-		raise Http404
+		#raise Http404
+		return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
 		
 	form = PostForm(request.POST or None, request.FILES or None)
 	if form.is_valid():
@@ -47,26 +49,22 @@ class PostDetailView(DetailView):
 	def get_object(self, *args, **kwargs):
 		slug = self.kwargs.get("slug")
 		instance = get_object_or_404(Post, slug=slug)
-		if instance.publish > timezone.now().date() or instance.draft:
-			if not request.user.is_staff or not request.user.is_superuser:
-				raise Http404
 		return instance
 	
-	def get_context_data(self, *args, **kwargs):
+	def get_context_data(self, *args, **kwargs):	
 		context = super(PostDetailView, self).get_context_data(*args, **kwargs)
 		instance = context['object']
-		context['share_string'] = quote_plus(instance.content)
+		context['share_string'] = quote_plus(instance.first_name)
 		return context
 	
 # in urls.py --> PostDetailView.as_view() instead of post_detail
 
 
 def post_detail(request, slug=None):
+	if not request.user.is_staff or not request.user.is_superuser:
+		return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))	
 	instance = get_object_or_404(Post, slug=slug)
-	if instance.publish > timezone.now().date() or instance.draft:
-		if not request.user.is_staff or not request.user.is_superuser:
-			raise Http404
-	share_string = quote_plus(instance.content)
+	share_string = quote_plus(instance.first_name)
 	context = {
 		"title": instance.title,
 		"instance": instance,
@@ -75,16 +73,17 @@ def post_detail(request, slug=None):
 	return render(request, "post_detail.html", context)
 
 def post_list(request):
+	if not request.user.is_staff or not request.user.is_superuser:
+		return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))	
 	today = timezone.now().date()
 	queryset_list = Post.objects.active() #.order_by("-timestamp")
-	if request.user.is_staff or request.user.is_superuser:
-		queryset_list = Post.objects.all()
+	queryset_list = Post.objects.all()
 	
 	query = request.GET.get("q")
 	if query:
 		queryset_list = queryset_list.filter(
-				Q(title__icontains=query)|
-				Q(content__icontains=query)|
+				Q(first_name__icontains=query)|
+				Q(last_name__icontains=query)|
 				Q(user__first_name__icontains=query) |
 				Q(user__last_name__icontains=query)
 				).distinct()
@@ -110,12 +109,9 @@ def post_list(request):
 	return render(request, "post_list.html", context)
 
 
-
-
-
 def post_update(request, slug=None):
 	if not request.user.is_staff or not request.user.is_superuser:
-		raise Http404
+		return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))	
 	instance = get_object_or_404(Post, slug=slug)
 	form = PostForm(request.POST or None, request.FILES or None, instance=instance)
 	if form.is_valid():
@@ -125,18 +121,25 @@ def post_update(request, slug=None):
 		return HttpResponseRedirect(instance.get_absolute_url())
 
 	context = {
-		"title": instance.title,
+		"title": instance.first_name,
 		"instance": instance,
 		"form":form,
 	}
 	return render(request, "post_form.html", context)
 
 
-
 def post_delete(request, slug=None):
 	if not request.user.is_staff or not request.user.is_superuser:
-		raise Http404
+		return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))	
 	instance = get_object_or_404(Post, slug=slug)
 	instance.delete()
 	messages.success(request, "Successfully deleted")
 	return redirect("posts:list")
+
+def post_tst(request):
+	context = {
+		"user": request.user,
+		"meta": request,
+
+	}
+	return render(request, "idex.html", {})
